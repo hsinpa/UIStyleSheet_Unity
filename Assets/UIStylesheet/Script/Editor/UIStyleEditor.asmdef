@@ -1,0 +1,16 @@
+{
+    "name": "UIStyleEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d1eda00e0d3957949a396ea050294b49"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
