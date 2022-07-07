@@ -2,9 +2,13 @@
     "name": "UIStyleEditor",
     "rootNamespace": "",
     "references": [
-        "GUID:d1eda00e0d3957949a396ea050294b49"
+        "GUID:d1eda00e0d3957949a396ea050294b49",
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
