@@ -1,0 +1,13 @@
+{
+  "name": "com.hsinpa.uistylesheet",
+  "displayName": "UIStyleSheet",
+  "version": "0.0.1",
+  "unity": "2019.4",
+  "description": "A UI button tool, support targeting on multiple graphics object",
+  "keywords": [
+    "ui",
+    "editor"
+  ],
+  "dependencies": {
+  }
+}
