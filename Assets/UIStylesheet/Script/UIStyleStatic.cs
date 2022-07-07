@@ -20,6 +20,13 @@ namespace Hsinpa.UIStyle
             public static UnityEngine.Color DisableColor = new UnityEngine.Color(0.5f, 0.5f, 0.5f);
         }
 
+        public enum UIEventEnum {
+            Idle = 0,
+            Hover = 1,
+            Pressed = 257,
+            Pressed_OutofBorder = 256
+        }
+
         public class FixedState {
             public const string Idle = "Idle";
             public const string Hover = "Hover";

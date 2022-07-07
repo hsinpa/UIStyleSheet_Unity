@@ -45,7 +45,7 @@ namespace Hsinpa.UIStyle
             if (uiStyleStruct.targetGraphic != null) {
 
                 if (uiStyleStruct.StateStructs.Count == 0)
-                    CreateDefaultStateLayout();
+                    UIStyleEditorUtility.CreateDefaultStateLayout(uiStyleStruct);
 
                 CreateStateGUILayout();
             }
@@ -53,6 +53,9 @@ namespace Hsinpa.UIStyle
             serializedObject.ApplyModifiedProperties();
         }
 
+        /// <summary>
+        /// Create new State
+        /// </summary>
         private void CreateStateGUILayout() {
             Rect outterLayout = EditorGUILayout.BeginVertical();
 
@@ -75,14 +78,12 @@ namespace Hsinpa.UIStyle
             EditorGUILayout.EndVertical();
         }
 
-
+        //Create Composition or remove selected state
         private void CreateStatesGUILayout(Rect rect, List<UIStyleStruct.StateStruct> stateStructs)
         {
-
             for (int i = 0; i < stateStructs.Count; i++)
             {
-
-                DrawUILine(Color.gray, thickness: 1);
+                UIStyleEditorUtility.DrawUILine(Color.gray, thickness: 1);
                 int styleIndex = i;
                 Rect composition_layout = EditorGUILayout.BeginVertical();
 
@@ -98,32 +99,27 @@ namespace Hsinpa.UIStyle
 
                 CreateComposition(stateStruct.compositions);
 
-
                 Rect footer_gui = EditorGUILayout.BeginHorizontal();
                 
-                if (GUILayout.Button("Append Composition"))
-                {
-                    OnCompositionAppend(styleIndex);
-                }
+                    if (GUILayout.Button("Append Composition"))
+                    {
+                        OnCompositionAppend(styleIndex);
+                    }
 
-                var oldColor = GUI.backgroundColor;
-                GUI.backgroundColor = this._alertColor;
-                GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
-                guiStyle.normal.textColor = Color.white;
-                guiStyle.fixedWidth = 20;
-                if (GUILayout.Button("-", guiStyle))
-                {
-                    stateStructs.RemoveAt(styleIndex);
-                }
-                GUI.backgroundColor = oldColor;
+                    //make button red and text white
+                    var oldColor = GUI.backgroundColor;
+                    GUI.backgroundColor = this._alertColor;
+                    GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
+                    guiStyle.normal.textColor = Color.white;
+                    guiStyle.fixedWidth = 20;
+                    if (GUILayout.Button("-", guiStyle))
+                    {
+                        stateStructs.RemoveAt(styleIndex);
+                    }
+                    GUI.backgroundColor = oldColor;
 
                 EditorGUILayout.EndHorizontal();
 
-                //UIStyleEditorUtility.DrawDropdown(composition_layout, "Select Composition", UIStyleStatic.Compositions, (int x) => {
-                //    OnCompositionAppend(styleIndex, x);
-                //});
-
-                //stateStructs[i] = stateStruct;
                 EditorGUILayout.EndVertical();
             }
 
@@ -132,8 +128,6 @@ namespace Hsinpa.UIStyle
         private void CreateComposition(List<UIStyleStruct.StyleComposition> compositionStructs) {
             if (compositionStructs == null) return;
             int compLens = compositionStructs.Count;
-
-
 
             for (int i = 0; i < compLens; i++) {
                 int compositeIndex = i;
@@ -150,7 +144,12 @@ namespace Hsinpa.UIStyle
                 }
 
                 UnityEngine.Object mobject = (UnityEngine.Object) styleComp.target;
-                styleComp.target =(UnityEngine.UI.Graphic)EditorGUILayout.ObjectField(mobject, type);
+                styleComp.target =(UnityEngine.UI.Graphic)EditorGUILayout.ObjectField(mobject, type, allowSceneObjects: true);
+
+                //Assign value to new assign ui graphics
+                if (mobject == null && styleComp.target != null) {
+                    UIStyleEditorUtility.AssignDefaultPropertyToGraphicsObject(styleComp.target, styleComp);
+                }
 
                 if (GUILayout.Button("-", GUILayout.MaxWidth(20)))
                 {
@@ -178,42 +177,21 @@ namespace Hsinpa.UIStyle
             //Text
             if (type == typeof(UnityEngine.UI.Text) || type == typeof(TMPro.TextMeshProUGUI)) {
                 styleComp.styles.size = EditorGUILayout.IntField("Text Size", styleComp.styles.size);
-                styleComp.styles.font = (UnityEngine.Font)EditorGUILayout.ObjectField((UnityEngine.Object)styleComp.styles.font, typeof(UnityEngine.Font));
+
+                if (type == typeof(UnityEngine.UI.Text))
+                    styleComp.styles.font = (UnityEngine.Font)EditorGUILayout.ObjectField((UnityEngine.Object)styleComp.styles.font, typeof(UnityEngine.Font), allowSceneObjects: true);
+
+                if (type == typeof(TMPro.TextMeshProUGUI))
+                    styleComp.styles.font_asset = (TMPro.TMP_FontAsset)EditorGUILayout.ObjectField((UnityEngine.Object)styleComp.styles.font_asset, typeof(TMPro.TMP_FontAsset), allowSceneObjects: true);
             }
 
             //Image
             if (type == typeof(UnityEngine.UI.Image) || type == typeof(UnityEngine.UI.RawImage))
             {
                 styleComp.styles.scale = EditorGUILayout.FloatField("Texture Scale", styleComp.styles.scale);
-                styleComp.styles.sprite = (UnityEngine.Sprite)EditorGUILayout.ObjectField((UnityEngine.Object)styleComp.styles.sprite, typeof(UnityEngine.Sprite));
+                styleComp.styles.sprite = (UnityEngine.Sprite)EditorGUILayout.ObjectField((UnityEngine.Object)styleComp.styles.sprite, typeof(UnityEngine.Sprite), allowSceneObjects: true);
             }
 
-        }
-
-        private void CreateDefaultStateLayout() {
-            if (uiStyleStruct.targetGraphic == null)
-            {
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Idle });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Hover });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Pressed });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Disabled });
-                return;
-            }
-
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Idle, UIStyleStatic.ColorTable.IdleColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Hover, UIStyleStatic.ColorTable.HoverColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Pressed, UIStyleStatic.ColorTable.PressedColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Disabled, UIStyleStatic.ColorTable.DisableColor));
-        }
-
-        public static void DrawUILine(Color color, int thickness = 2, int padding = 10)
-        {
-            Rect r = EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness));
-            r.height = thickness;
-            r.y += padding / 2;
-            r.x -= 2;
-            r.width += 6;
-            EditorGUI.DrawRect(r, color);
         }
 
         private void OnCompositionAppend(int styleStructIndex) {
@@ -223,8 +201,5 @@ namespace Hsinpa.UIStyle
 
             //uiStyleStruct.StateStructs[styleStructIndex] = stateStruct;
         }
-
-
-
     }
 }

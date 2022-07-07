@@ -67,6 +67,8 @@ namespace Hsinpa.UIStyle
 
             //Text / TMPro Material
             public Font font;
+            public TMPro.TMP_FontAsset font_asset;
+
             public int size;
 
             //Image / Raw Image
