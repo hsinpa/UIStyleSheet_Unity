@@ -70,21 +70,32 @@ namespace Hsinpa.UIStyle
         }
 
 
-        public static void CreateDefaultStateLayout(UIStylesheet uiStyleStruct)
+        public static void CreateDefaultStateLayout(UIStylesheet uiStyleStruct, int styleIndex)
         {
             if (uiStyleStruct.targetGraphic == null)
             {
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Idle });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Hover });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Pressed });
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Disabled });
+                uiStyleStruct.m_char_list[styleIndex].stateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Idle });
+                //uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Hover });
+                //uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Pressed });
+                //uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct() { state = UIStyleStruct.Trigger.Disabled });
                 return;
             }
 
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Idle, UIStyleStatic.ColorTable.IdleColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Hover, UIStyleStatic.ColorTable.HoverColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Pressed, UIStyleStatic.ColorTable.PressedColor));
-            uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Disabled, UIStyleStatic.ColorTable.DisableColor));
+            uiStyleStruct.m_char_list[styleIndex].stateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Idle, UIStyleStatic.ColorTable.IdleColor));
+            //uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Hover, UIStyleStatic.ColorTable.HoverColor));
+            //uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Pressed, UIStyleStatic.ColorTable.PressedColor));
+            //uiStyleStruct.StateStructs.Add(UIStyleStruct.StateStruct.SetDefaultComposition(uiStyleStruct.targetGraphic, UIStyleStruct.Trigger.Disabled, UIStyleStatic.ColorTable.DisableColor));
+        }
+
+        public static string[] CreateStyleLabelArray(int style_count) {
+            string toolbarStringPrefix = "Style {0}";
+            string[] labels = new string[style_count];
+
+            for (int i = 0; i < style_count; i++) {
+                labels[i] = string.Format(toolbarStringPrefix, i+1);
+            }
+
+            return labels;
         }
 
     }

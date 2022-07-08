@@ -3,11 +3,10 @@ namespace Hsinpa.UIStyle
     public class UIStyleStatic
     {
 
-        public static readonly string[] States = new string[5] { UIStyleStatic.FixedState.Idle,
+        public static readonly string[] States = new string[4] { UIStyleStatic.FixedState.Idle,
                                                                 UIStyleStatic.FixedState.Hover,
                                                                 UIStyleStatic.FixedState.Pressed,
-                                                                UIStyleStatic.FixedState.Disable,
-                                                                UIStyleStatic.FixedState.Custom,
+                                                                UIStyleStatic.FixedState.Disable
         };
 
         public static readonly string[] Compositions = new string[2] { UIStyleStatic.FixedComposition.Text,

@@ -6,12 +6,23 @@ namespace Hsinpa.UIStyle
 {
     public class UIStyleStruct
     {
-        public enum Trigger { Idle, Hover, Pressed, Disabled, Custom };
+        public enum Trigger { Idle, Hover, Pressed, Disabled, None };
+
+        public struct TriggerStruct {
+            public Trigger trigger;
+            public Trigger fallback;
+        }
+
+        public readonly static Dictionary<Trigger, TriggerStruct> TRIGGER_TABLE = new System.Collections.Generic.Dictionary<Trigger, TriggerStruct>() {
+            {Trigger.Disabled, new TriggerStruct() {trigger = Trigger.Disabled, fallback = Trigger.Idle } },
+            {Trigger.Pressed, new TriggerStruct() {trigger = Trigger.Pressed, fallback = Trigger.Hover } },
+            {Trigger.Hover, new TriggerStruct() {trigger = Trigger.Hover, fallback = Trigger.Idle } },
+            {Trigger.Idle, new TriggerStruct() {trigger = Trigger.Idle, fallback = Trigger.None } },
+        }; 
 
         [System.Serializable]
         public class StateStruct {
             public Trigger state;
-            public string id; // Only used in custom state
             public List<StyleComposition> compositions;
 
             public bool IsValid => compositions == null;
@@ -23,7 +34,7 @@ namespace Hsinpa.UIStyle
             }
 
             public StateStruct() {
-                this.state = Trigger.Custom;
+                this.state = Trigger.Idle;
                 this.compositions = new List<StyleComposition>();
             }
 
@@ -50,6 +61,15 @@ namespace Hsinpa.UIStyle
 
             public StyleStruct styles;
 
+            public Color OriginalColor { get {
+                    if (_originalColor == Color.clear && target != null)
+                        _originalColor = target.color;
+
+                    return _originalColor;
+                } 
+            }
+            private Color _originalColor = Color.clear;
+
             public bool is_expanded; // Accordion effect Editor UI
 
             public StyleComposition() {
@@ -73,6 +93,11 @@ namespace Hsinpa.UIStyle
 
             //Image / Raw Image
             public Sprite sprite;
+        }
+
+        [System.Serializable]
+        public class Characteristics {
+            public List<UIStyleStruct.StateStruct> stateStructs = new List<StateStruct>();
         }
         #endregion
 

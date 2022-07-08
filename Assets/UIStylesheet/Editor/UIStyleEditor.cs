@@ -14,11 +14,18 @@ namespace Hsinpa.UIStyle
 
         SerializedProperty interactable_property;
         SerializedProperty targetGraphic_property;
+        SerializedProperty uiStylesheetSRP_property;
+        SerializedProperty styleLength_property;
+        SerializedProperty styleLists_property;
 
 
         Texture _expandTex;
         Texture _closedTex;
         Color _alertColor;
+
+        string[] toolbarArray = new string[0];
+        List<UIStyleStruct.StateStruct> CurrentStateStructList => uiStyleStruct.m_char_list[style_index].stateStructs;
+        int style_index = 0;
 
         void OnEnable()
         {
@@ -28,12 +35,13 @@ namespace Hsinpa.UIStyle
             stateStruct_property = serializedObject.FindProperty("_stateStructs");
             interactable_property = serializedObject.FindProperty("m_Interactable");
             targetGraphic_property = serializedObject.FindProperty("m_TargetGraphic");
+            uiStylesheetSRP_property = serializedObject.FindProperty("m_uiStylesheetSRP");
+            styleLength_property = serializedObject.FindProperty("m_styleLength");
+            styleLists_property = serializedObject.FindProperty("m_styleLists");
 
             this._expandTex = (Texture)Resources.Load("Texture/sort-down");
             this._closedTex = (Texture)Resources.Load("Texture/sort-up");
             this._alertColor = new Color32(231, 76, 60, 255);
-
-            Debug.Log(this._closedTex.name);
         }
 
         public override void OnInspectorGUI()
@@ -41,16 +49,32 @@ namespace Hsinpa.UIStyle
             serializedObject.Update();
             EditorGUILayout.PropertyField(interactable_property);
             EditorGUILayout.PropertyField(targetGraphic_property);
+            EditorGUILayout.PropertyField(uiStylesheetSRP_property);
+            EditorGUILayout.PropertyField(styleLength_property);
 
             if (uiStyleStruct.targetGraphic != null) {
 
-                if (uiStyleStruct.StateStructs.Count == 0)
-                    UIStyleEditorUtility.CreateDefaultStateLayout(uiStyleStruct);
+                if (toolbarArray.Length != uiStyleStruct.StyleLength)
+                    toolbarArray = UIStyleEditorUtility.CreateStyleLabelArray(uiStyleStruct.StyleLength);
 
+                while (uiStyleStruct.m_char_list.Count > uiStyleStruct.StyleLength) {
+                    uiStyleStruct.m_char_list.RemoveAt(uiStyleStruct.m_char_list.Count - 1);
+                }
+
+                while (uiStyleStruct.m_char_list.Count < uiStyleStruct.StyleLength)
+                {
+                    uiStyleStruct.m_char_list.Add(new UIStyleStruct.Characteristics());
+                    UIStyleEditorUtility.CreateDefaultStateLayout(uiStyleStruct, uiStyleStruct.m_char_list.Count - 1);
+                }
+
+                style_index = GUILayout.Toolbar(style_index, toolbarArray);
+                style_index = Mathf.Clamp(style_index, 0, uiStyleStruct.StyleLength-1);
                 CreateStateGUILayout();
+
             }
 
             serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(uiStyleStruct);
         }
 
         /// <summary>
@@ -62,16 +86,16 @@ namespace Hsinpa.UIStyle
 
             EditorGUILayout.BeginHorizontal();
 
-            GUILayout.Label("States", new GUIStyle() { fontStyle = FontStyle.Bold, fontSize = 14 });
+            GUILayout.Label("States", new GUIStyle() { fontStyle = FontStyle.Bold, fontSize = 12 });
 
             if (GUILayout.Button("+", GUILayout.Width(20)))
             {
-                uiStyleStruct.StateStructs.Add(new UIStyleStruct.StateStruct());
+                CurrentStateStructList.Add(new UIStyleStruct.StateStruct());
             }
 
             EditorGUILayout.EndHorizontal();
 
-            CreateStatesGUILayout(outterLayout, uiStyleStruct.StateStructs);
+            CreateStatesGUILayout(outterLayout, CurrentStateStructList);
 
             GUILayout.Space(20);
 
@@ -92,10 +116,6 @@ namespace Hsinpa.UIStyle
                                                 (int)stateStruct.state,
                                                 UIStyleStatic.States);
                 stateStruct.SetState((UIStyleStruct.Trigger) d);
-
-                if (d == (int)UIStyle.UIStyleStruct.Trigger.Custom) {
-                    stateStruct.id = EditorGUILayout.TextField("ID", stateStruct.id);
-                }
 
                 CreateComposition(stateStruct.compositions);
 
@@ -195,7 +215,7 @@ namespace Hsinpa.UIStyle
         }
 
         private void OnCompositionAppend(int styleStructIndex) {
-            var stateStruct = uiStyleStruct.StateStructs[styleStructIndex];
+            var stateStruct = CurrentStateStructList[styleStructIndex];
 
             stateStruct.compositions.Add(new UIStyleStruct.StyleComposition());
 
