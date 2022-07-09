@@ -31,7 +31,7 @@ namespace Hsinpa.UIStyle {
             set {
                 base.interactable = value;
 
-                if (value)
+                if (!value)
                     ExecuteFirstState(UIStyleStruct.Trigger.Disabled);
                 else
                     FilterPostUIState();
@@ -222,7 +222,11 @@ namespace Hsinpa.UIStyle {
         public new void Start()
         {
             base.Start();
-            ExecuteFirstState(UIStyleStruct.Trigger.Idle);
+
+            if (!interactable)
+                ExecuteFirstState(UIStyleStruct.Trigger.Disabled);
+            else
+                ExecuteFirstState(UIStyleStruct.Trigger.Idle);
         }
         #endregion
     }

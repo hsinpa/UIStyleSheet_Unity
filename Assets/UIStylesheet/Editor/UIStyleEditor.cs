@@ -52,6 +52,8 @@ namespace Hsinpa.UIStyle
             EditorGUILayout.PropertyField(uiStylesheetSRP_property);
             EditorGUILayout.PropertyField(styleLength_property);
 
+            uiStyleStruct.interactable = uiStyleStruct.interactable;
+
             if (uiStyleStruct.targetGraphic != null) {
 
                 if (toolbarArray.Length != uiStyleStruct.StyleLength)
