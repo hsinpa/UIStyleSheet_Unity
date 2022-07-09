@@ -181,7 +181,7 @@ namespace Hsinpa.UIStyle {
         public override void OnPointerEnter(PointerEventData eventData)
         {
             base.OnPointerEnter(eventData);
-            Debug.Log("OnPointerEnter");
+            //Debug.Log("OnPointerEnter");
             byteState[0] = 1;
             FilterPostUIState();
         }
@@ -191,7 +191,7 @@ namespace Hsinpa.UIStyle {
             base.OnPointerExit(eventData);
             byteState[0] = 0;
             FilterPostUIState();
-            Debug.Log("OnPointerExit");
+            //Debug.Log("OnPointerExit");
         }
 
         public override void OnPointerDown(PointerEventData eventData)
@@ -200,7 +200,7 @@ namespace Hsinpa.UIStyle {
             byteState[1] = 1;
             FilterPostUIState();
 
-            Debug.Log("OnPress");
+            //Debug.Log("OnPress");
         }
 
         public override void OnPointerUp(PointerEventData eventData)
@@ -208,7 +208,7 @@ namespace Hsinpa.UIStyle {
             base.OnPointerUp(eventData);
             byteState[1] = 0;
             FilterPostUIState();
-            Debug.Log("OnRelease");
+            //Debug.Log("OnRelease");
         }
 
         public override void OnPointerClick(PointerEventData eventData)
@@ -216,7 +216,7 @@ namespace Hsinpa.UIStyle {
             base.OnPointerClick(eventData);
             if (interactable) return;
             this.onClick.Invoke();
-            Debug.Log("OnPointerClick");
+            //Debug.Log("OnPointerClick");
         }
 
         public new void Start()
