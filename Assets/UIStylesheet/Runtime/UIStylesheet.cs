@@ -160,6 +160,8 @@ namespace Hsinpa.UIStyle {
 
         private UIStyleStruct.StateStruct FindFirstState(UIStyleStruct.Trigger trigger)
         {
+            if (m_char_list == null || m_char_list.Count <= 0) return null;
+
             UIStyleStruct.StateStruct findStruct = StateStructs.Find(x => x.state == trigger);
 
             if (findStruct == null)
