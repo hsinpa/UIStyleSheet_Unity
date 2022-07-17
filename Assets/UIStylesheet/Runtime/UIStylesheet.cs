@@ -27,7 +27,7 @@ namespace Hsinpa.UIStyle {
 
         public int StyleLength => m_styleLength;
 
-        public new bool interactable { get => base.interactable;
+        public new bool interactable { get => base.IsInteractable();
             set {
                 base.interactable = value;
 
@@ -54,10 +54,12 @@ namespace Hsinpa.UIStyle {
         #region Private Implementation
         private void FilterPostUIState()
         {
-            if (!interactable) return;
+            if (!interactable) {
+                ExecuteFirstState(UIStyleStruct.Trigger.Disabled);
+                return;
+            };
 
             var ui_state = System.BitConverter.ToInt16(byteState, 0);
-
 
             switch (ui_state)
             {
@@ -216,9 +218,19 @@ namespace Hsinpa.UIStyle {
         public override void OnPointerClick(PointerEventData eventData)
         {
             base.OnPointerClick(eventData);
-            if (interactable) return;
+            if (!interactable) return;
+
+            byteState[0] = 0; // Reset
+            byteState[1] = 0; // Reset
+            FilterPostUIState();
+
             this.onClick.Invoke();
             //Debug.Log("OnPointerClick");
+        }
+
+        protected override void DoStateTransition(SelectionState state, bool instant) {
+            base.DoStateTransition(state, instant);
+            if (state == SelectionState.Disabled || state == SelectionState.Normal) FilterPostUIState();
         }
 
         public new void Start()

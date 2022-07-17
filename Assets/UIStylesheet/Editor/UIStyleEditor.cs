@@ -26,6 +26,7 @@ namespace Hsinpa.UIStyle
         string[] toolbarArray = new string[0];
         List<UIStyleStruct.StateStruct> CurrentStateStructList => uiStyleStruct.m_char_list[style_index].stateStructs;
         int style_index = 0;
+        private bool _cacheLastInteractable;
 
         void OnEnable()
         {
@@ -52,7 +53,10 @@ namespace Hsinpa.UIStyle
             EditorGUILayout.PropertyField(uiStylesheetSRP_property);
             EditorGUILayout.PropertyField(styleLength_property);
 
-            uiStyleStruct.interactable = uiStyleStruct.interactable;
+            if (uiStyleStruct.interactable != _cacheLastInteractable)
+                uiStyleStruct.interactable = uiStyleStruct.interactable;
+
+            _cacheLastInteractable = uiStyleStruct.interactable;
 
             if (uiStyleStruct.targetGraphic != null) {
 
@@ -72,11 +76,10 @@ namespace Hsinpa.UIStyle
                 style_index = GUILayout.Toolbar(style_index, toolbarArray);
                 style_index = Mathf.Clamp(style_index, 0, uiStyleStruct.StyleLength-1);
                 CreateStateGUILayout();
-
             }
 
             serializedObject.ApplyModifiedProperties();
-            EditorUtility.SetDirty(uiStyleStruct);
+            //EditorUtility.SetDirty(uiStyleStruct);
         }
 
         /// <summary>
