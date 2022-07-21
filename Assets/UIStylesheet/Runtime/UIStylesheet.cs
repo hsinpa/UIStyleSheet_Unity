@@ -60,7 +60,6 @@ namespace Hsinpa.UIStyle {
             };
 
             var ui_state = System.BitConverter.ToInt16(byteState, 0);
-
             switch (ui_state)
             {
                 case (int)UIStyleStatic.UIEventEnum.Idle:
@@ -168,7 +167,6 @@ namespace Hsinpa.UIStyle {
 
             if (findStruct == null)
             {
-
                 if (UIStyleStruct.TRIGGER_TABLE.TryGetValue(trigger, out var triggerConfig))
                 {
                     if (triggerConfig.fallback != UIStyleStruct.Trigger.None)
@@ -217,14 +215,14 @@ namespace Hsinpa.UIStyle {
 
         public override void OnPointerClick(PointerEventData eventData)
         {
-            base.OnPointerClick(eventData);
             if (!interactable) return;
 
-            byteState[0] = 0; // Reset
+            onClick?.Invoke();
+            //base.OnPointerClick(eventData);
+
+            //byteState[0] = 0; // Reset
             byteState[1] = 0; // Reset
             FilterPostUIState();
-
-            this.onClick.Invoke();
             //Debug.Log("OnPointerClick");
         }
 
