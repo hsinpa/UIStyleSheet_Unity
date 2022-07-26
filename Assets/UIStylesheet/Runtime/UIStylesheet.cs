@@ -240,6 +240,23 @@ namespace Hsinpa.UIStyle {
             else
                 ExecuteFirstState(UIStyleStruct.Trigger.Idle);
         }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Dispose();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            Dispose();
+        }
+
+        private void Dispose() {
+            byteState[0] = 0;
+            byteState[1] = 0;
+        }
         #endregion
     }
 }
